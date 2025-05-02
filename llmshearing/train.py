@@ -31,6 +31,7 @@ from llmshearing.callbacks.dynamic_loading_callback import \
 from llmshearing.callbacks.pruning_callback import PruningCallback
 from llmshearing.datasets.load_text_dataloader import build_text_dataloader
 from llmshearing.models.model_registry import COMPOSER_MODEL_REGISTRY
+import streaming
 
 streaming.base.util.clean_stale_shared_memory()
 

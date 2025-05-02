@@ -16,8 +16,7 @@
 #SBATCH --mail-user=yx3038@nyu.edu
 #SBATCH --no-requeue
 
-source /share/apps/anaconda3/2020.07/etc/profile.d/conda.sh
-conda activate llmshearing
+source ../configs/setup.sh
 
 export PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
 export MODEL_DIR='/scratch/yx3038/model_ckpt'

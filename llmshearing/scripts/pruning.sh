@@ -1,9 +1,9 @@
+#!/bin/bash
+
+source ../configs/setup.sh
+check_sbash pruning 16 128 1 1 tandon_h100_1
+
 # pruning llama2 7b -> 3b or 1.3b
-
-# Please specify the working folder
-PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
-MODEL_DIR='/scratch/yx3038/model_ckpt'
-
 LAUNCH_SCRIPT=${PROJ_DIR}/llmshearing/scripts/launch.sh
 DATA_DIR=${PROJ_DIR}/llmshearing/data/mds_sample_redpajama/for_prune
 OUTPUT_DIR=${PROJ_DIR}/outputs

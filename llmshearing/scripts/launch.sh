@@ -30,6 +30,8 @@ echo "MASTER_PORT="$MASTER_PORT
 echo "WORLD_SIZE="$WORLD_SIZE
 echo "num_nodes="$num_nodes
 
+# composer $PROJ_DIR/llmshearing/train.py "$@" 
+
 torchrun \
   --nproc_per_node=$SLURM_GPUS_PER_NODE \
   --nnodes=$num_nodes \
