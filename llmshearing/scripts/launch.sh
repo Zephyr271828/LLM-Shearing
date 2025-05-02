@@ -11,12 +11,13 @@
 #SBATCH --constraint gpu80
 #SBATCH --output=/scratch/gpfs/mengzhou/space2/out/logs/%x-%j.out
 
-PROJ_DIR=$n/space2/LLM-Shearing
-LOG_DIR=/scratch/gpfs/mengzhou/space2/out/logs
+PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
+LOG_DIR="${PROJ_DIR}/logs"
 
 # num_nodes=$(scontrol show job $SLURM_JOB_ID | grep NodeList=della | wc -l)
 num_nodes=$(scontrol show hostnames $SLURM_JOB_NODELIST | wc -l)
 master_addr=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
+SLURM_GPUS_PER_NODE=$(nvidia-smi -L | wc -l)
 
 export MASTER_ADDR=$master_addr
 echo $SLURM_GPUS_PER_NODE
@@ -29,6 +30,11 @@ echo "MASTER_PORT="$MASTER_PORT
 echo "WORLD_SIZE="$WORLD_SIZE
 echo "num_nodes="$num_nodes
 
-if [[ $num_nodes == 1 ]]; then composer $PROJ_DIR/llmshearing/train.py $@; 
-else srun --output=$LOG_DIR/%x-%j-%n.out bash $PROJ_DIR/llmshearing/scripts/srun_launch.sh $@; fi
+torchrun \
+  --nproc_per_node=$SLURM_GPUS_PER_NODE \
+  --nnodes=$num_nodes \
+  --node_rank=$SLURM_NODEID \
+  --master_addr=$MASTER_ADDR \
+  --master_port=$MASTER_PORT \
+  $PROJ_DIR/llmshearing/train.py "$@" 
  

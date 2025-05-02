@@ -1,12 +1,14 @@
 # pruning llama2 7b -> 3b or 1.3b
 
 # Please specify the working folder
-PROJ_DIR=/scratch/gpfs/mengzhou/space2/LLM-Shearing
+PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
+MODEL_DIR='/scratch/yx3038/model_ckpt'
+
 LAUNCH_SCRIPT=${PROJ_DIR}/llmshearing/scripts/launch.sh
-DATA_DIR=/scratch/gpfs/mengzhou/llm_data/version5-uint16/500b_dedup_4k/for_prune
-OUTPUT_DIR=/scratch/gpfs/mengzhou/space2/out/test_release_pruning_full
+DATA_DIR=${PROJ_DIR}/llmshearing/data/mds_sample_redpajama/for_prune
+OUTPUT_DIR=${PROJ_DIR}/outputs
 TRAIN_SCRIPT=${PROJ_DIR}/llmshearing/train.py
-MODEL_PATH=/projects/DANQIC/mengzhou/LLaMA2
+# MODEL_PATH=${PROJ_DIR}/ckpts/Llama-2-7b-composer
 
 # Specify $PROJ_DIR in scripts/launch.sh and scripts/srun_launch.sh if using slurm
 
@@ -15,7 +17,7 @@ test=False
 from_model=7b # source model size
 to_model=2.7b # target model size
 config_file=${PROJ_DIR}/llmshearing/configs/llama2/${from_model}.yaml
-path=$MODEL_PATH/mosaic-7B/state_dict.pt
+path=${PROJ_DIR}/ckpts/Llama-2-7b-composer/state_dict.pt
 
 # data setup
 data_local=${DATA_DIR}
@@ -73,13 +75,7 @@ if [[ $test == True ]]; then t=00-01:00:00; else t=00-20:00:00; fi
 # composer $TRAIN_SCRIPT \
 
 # Run with slurm    
-sbatch --job-name ${run_name} \
-    --nodes=4 \
-    --gpus-per-node=2 \
-    --mem=512gb \
-    --cpus-per-task=8 \
-    --time $t \
-    $LAUNCH_SCRIPT \
+bash $LAUNCH_SCRIPT \
     $config_file \
     run_name=${run_name} \
     data_local=${data_local} \

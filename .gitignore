@@ -1,0 +1,5 @@
+__pycache__
+ckpts/
+outputs/
+llmshearing/data/mds_sample_redpajama/
+llmshearing/data/tokenized_sample_redpajama/
