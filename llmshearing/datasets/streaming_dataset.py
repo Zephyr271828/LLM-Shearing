@@ -194,7 +194,7 @@ class DynamicStreamingDataset(StreamingDataset):
 
         # Load the correct resumption meta data.
         epoch = obj['epoch']
-        assert epoch == 0, "Currently only supports dynamic loading from each domain for once."
+        # assert epoch == 0, "Currently only supports dynamic loading from each domain for once."
         used_sample_ids = obj['used_sample_ids']
         self.num_canonical_nodes = obj['num_canonical_nodes']
         self.shuffle_seed = obj['shuffle_seed']

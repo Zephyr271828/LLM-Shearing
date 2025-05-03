@@ -75,6 +75,9 @@ check_sbash() {
     generate_sbatch_header "$@"
     echo "$SBTACH_HEADER" > "$TMP_SCRIPT"
 
+    # == source setup.sh explicitly == #
+    echo "source \"$(realpath "${BASH_SOURCE%/*}/../configs/setup.sh")\"" >> "$TMP_SCRIPT"
+
     # == append the current script to the tmp script == #
     awk '
       BEGIN { skip = 0 }
@@ -83,6 +86,7 @@ check_sbash() {
     ' "$0" >> "$TMP_SCRIPT"
 
     sbatch "$TMP_SCRIPT"
+    cat $TMP_SCRIPT
     rm $TMP_SCRIPT
     exit 0
   fi

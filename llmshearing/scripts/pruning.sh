@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ../configs/setup.sh
-check_sbash pruning 16 128 1 1 tandon_h100_1
+check_sbash pruning 16 128 24 2 "tandon_h100_1,tandon_a100_1,tandon_a100_2"
 
 # pruning llama2 7b -> 3b or 1.3b
 LAUNCH_SCRIPT=${PROJ_DIR}/llmshearing/scripts/launch.sh
@@ -23,10 +23,11 @@ path=${PROJ_DIR}/ckpts/Llama-2-7b-composer/state_dict.pt
 data_local=${DATA_DIR}
 
 # basic setup
-max_seq_len=4096
-device_train_microbatch_size=4
+max_seq_len=2048
+device_train_microbatch_size=1
 global_train_batch_size=32
 device_eval_batch_size=8
+precision=amp_fp16
 
 # learning setup
 lr=1e-4 # learning rate for the main parameters
@@ -83,6 +84,7 @@ bash $LAUNCH_SCRIPT \
     global_train_batch_size=${global_train_batch_size} \
     device_train_microbatch_size=${device_train_microbatch_size} \
     device_eval_batch_size=${device_eval_batch_size} \
+    precision=${precision} \
     max_seq_len=${max_seq_len} \
     max_duration=${max_duration} \
     eval_first=false \
