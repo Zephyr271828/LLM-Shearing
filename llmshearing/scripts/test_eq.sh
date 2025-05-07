@@ -18,13 +18,11 @@
 
 source ../configs/setup.sh
 
-export PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
-export MODEL_DIR='/scratch/yx3038/model_ckpt'
-
-export HF_MODEL_NAME="${MODEL_DIR}/Llama-2-7b-hf"
-export OUTPUT_PATH="${PROJ_DIR}/ckpts/Llama-2-7b-composer/state_dict.pt"
+# export HF_MODEL_NAME="${MODEL_DIR}/Llama-2-7b-hf"
+# export OUTPUT_PATH="${PROJ_DIR}/ckpts/Llama-2-7b-composer/state_dict.pt"
+export OUTPUT_PATH="${PROJ_DIR}"/outputs/llama2_7b_pruning_scaling_doremi_to2.7b_sl2048/
 export HF_MODEL_NAME2="${PROJ_DIR}/ckpts/Llama-2-7b-hf"
-export MODEL_SIZE=7B
+export MODEL_SIZE=2.7B
 
 python3 -m llmshearing.utils.test_composer_hf_eq $HF_MODEL_NAME $OUTPUT_PATH $MODEL_SIZE
 

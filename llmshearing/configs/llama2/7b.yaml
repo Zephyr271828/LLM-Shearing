@@ -22,7 +22,7 @@ model:
   attn_pdrop: 0.0
   resid_pdrop: 0.0
   emb_pdrop: 0.0
-  attn_impl: flash
+  attn_impl: sdpa
   rms_norm_eps: 1e-5
   l0_module:
     start_sparsity: 0.0

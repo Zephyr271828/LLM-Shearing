@@ -194,7 +194,7 @@ class DynamicStreamingDataset(StreamingDataset):
 
         # Load the correct resumption meta data.
         epoch = obj['epoch']
-        # assert epoch == 0, "Currently only supports dynamic loading from each domain for once."
+        assert epoch == 0, "Currently only supports dynamic loading from each domain for once."
         used_sample_ids = obj['used_sample_ids']
         self.num_canonical_nodes = obj['num_canonical_nodes']
         self.shuffle_seed = obj['shuffle_seed']
@@ -218,6 +218,7 @@ class DynamicStreamingDataset(StreamingDataset):
 
         # Either resume from checkpoint, or start from scratch.
         presumed_epoch = self.next_epoch
+        # presumed_epoch = 0
         epoch, used_sample_ids = self._resume(world, presumed_epoch)
 
         # Wait for everyone to get the epoch above.
@@ -389,7 +390,8 @@ class DynamicStreamingDataset(StreamingDataset):
             proportion = self.proportion
             stream_id = np.random.choice(range(self.num_streams), 1, p=proportion)[0].item()
             domain_sample_id = sample_ids_per_stream[stream_id]
-            domain_sample_id = domain_sample_id[self.used_num_samples_per_stream[stream_id] % self.samples_per_stream[stream_id]]
+            # domain_sample_id = domain_sample_id[self.used_num_samples_per_stream[stream_id] % self.samples_per_stream[stream_id]]
+            domain_sample_id = domain_sample_id[self.used_num_samples_per_stream[stream_id] % len(sample_ids_per_stream[stream_id])]
             self.used_num_samples_per_stream[stream_id] += 1
             yield self[domain_sample_id]
 

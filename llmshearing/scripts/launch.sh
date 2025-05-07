@@ -15,8 +15,8 @@ PROJ_DIR='/scratch/yx3038/Research/pruning/LLM-Shearing'
 LOG_DIR="${PROJ_DIR}/logs"
 
 # num_nodes=$(scontrol show job $SLURM_JOB_ID | grep NodeList=della | wc -l)
-num_nodes=$(scontrol show hostnames $SLURM_JOB_NODELIST | wc -l)
-master_addr=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
+num_nodes=$(scontrol show hostnames $(hostname) | wc -l)
+master_addr=$(scontrol show hostnames $(hostname) | head -n 1)
 SLURM_GPUS_PER_NODE=$(nvidia-smi -L | wc -l)
 
 export MASTER_ADDR=$master_addr
@@ -35,7 +35,7 @@ echo "num_nodes="$num_nodes
 torchrun \
   --nproc_per_node=$SLURM_GPUS_PER_NODE \
   --nnodes=$num_nodes \
-  --node_rank=$SLURM_NODEID \
+  --node_rank=${SLURM_NODEID:-0} \
   --master_addr=$MASTER_ADDR \
   --master_port=$MASTER_PORT \
   $PROJ_DIR/llmshearing/train.py "$@" 

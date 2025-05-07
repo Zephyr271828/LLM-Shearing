@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $(hostname) == *"hpc.nyu.edu"* ]]; then
+if [[ $(hostname -f) == *"hpc.nyu.edu"* ]]; then
 
   echo "setting up configs for NYU Greene"
 
@@ -9,16 +9,17 @@ if [[ $(hostname) == *"hpc.nyu.edu"* ]]; then
   export DEFAULT_PARTITION="tandon_h100_1"
 
   # == set up conda commands == #
-  module load cuda/11.6.2
+  # module load cuda/11.6.2
   export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}"
   source /share/apps/anaconda3/2020.07/etc/profile.d/conda.sh
-  conda activate llmshearing
+  conda activate llmshearing3
+  # export LD_LIBRARY_PATH=$(python -c "import torch; import os; print(os.path.dirname(torch.__file__) + '/lib')"):$LD_LIBRARY_PATH
 
   # == set up directories == #
   export PROJ_DIR="/scratch/yx3038/Research/pruning/LLM-Shearing"
   export MODEL_DIR="/scratch/yx3038/model_ckpt"
 
-elif [[ $(hostname) == *"ncsa.illinois.edu"* ]]; then
+elif [[ $(hostname -f) == *"ncsa.illinois.edu"* ]]; then
 
   echo "setting up configs for UIUC NCSA"
 

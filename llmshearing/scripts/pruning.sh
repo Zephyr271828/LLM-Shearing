@@ -1,12 +1,12 @@
 #!/bin/bash
 
 source ../configs/setup.sh
-check_sbash pruning 16 128 24 2 "tandon_h100_1,tandon_a100_1,tandon_a100_2"
+check_sbash pruning_%j 16 256 24 2 "tandon_h100_1,tandon_a100_1,tandon_a100_2"
 
 # pruning llama2 7b -> 3b or 1.3b
 LAUNCH_SCRIPT=${PROJ_DIR}/llmshearing/scripts/launch.sh
-DATA_DIR=${PROJ_DIR}/llmshearing/data/mds_sample_redpajama/for_prune
-OUTPUT_DIR=${PROJ_DIR}/outputs
+DATA_DIR=${PROJ_DIR}/llmshearing/data/orig_data/for_prune
+OUTPUT_DIR=${PROJ_DIR}/ckpts/
 TRAIN_SCRIPT=${PROJ_DIR}/llmshearing/train.py
 # MODEL_PATH=${PROJ_DIR}/ckpts/Llama-2-7b-composer
 
@@ -15,7 +15,7 @@ TRAIN_SCRIPT=${PROJ_DIR}/llmshearing/train.py
 test=False
 
 from_model=7b # source model size
-to_model=2.7b # target model size
+to_model=1.3b # target model size
 config_file=${PROJ_DIR}/llmshearing/configs/llama2/${from_model}.yaml
 path=${PROJ_DIR}/ckpts/Llama-2-7b-composer/state_dict.pt
 
@@ -64,6 +64,7 @@ elif [[ $to_model == 2.7b ]]; then
 elif [[ $to_model == 370m ]]; then
     target_d_model=1024; target_n_heads=8; target_n_layers=24; target_intermediate_size=2816
 fi
+attn_impl=flash
 
 # save directroy
 run_name=llama2_${from_model}_pruning_scaling_${update_type}_to${to_model}_sl${max_seq_len}
@@ -76,7 +77,8 @@ if [[ $test == True ]]; then t=00-01:00:00; else t=00-20:00:00; fi
 # composer $TRAIN_SCRIPT \
 
 # Run with slurm    
-bash $LAUNCH_SCRIPT \
+# bash $LAUNCH_SCRIPT \
+composer $PROJ_DIR/llmshearing/train.py \
     $config_file \
     run_name=${run_name} \
     data_local=${data_local} \
@@ -103,6 +105,7 @@ bash $LAUNCH_SCRIPT \
     model.l0_module.target_model.n_heads=${target_n_heads} \
     model.l0_module.target_model.n_layers=${target_n_layers} \
     model.l0_module.target_model.intermediate_size=${target_intermediate_size} \
+    model.attn_impl=${attn_impl} \
     callbacks.data_loading.dynamic=${dynamic} \
     callbacks.data_loading.set_names=${set_names} \
     callbacks.data_loading.proportion=${proportion} \
